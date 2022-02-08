@@ -1,0 +1,15 @@
+.note{
+    margin-bottom: 25px;
+}
+.NoteItem {
+    width: 100%;
+    padding: 22px 45px;
+    font-size: 25px;
+    font-weight: 400;
+    line-height: 24px;
+    background-color: #FD99FF;
+    color: #000000;
+    border-radius: 10px;
+    margin:  0 25px;
+    cursor: pointer;
+}

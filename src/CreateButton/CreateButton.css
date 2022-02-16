@@ -10,6 +10,7 @@
     font-size: 30px;
     font-weight: bold;
     text-align: center;
+    line-height: 48px;
     background-color: #252525; 
     color: #fff;
     border-radius: 50%;
@@ -19,7 +20,7 @@
     right: 40px;
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.4), -5px 0px 10px rgba(0, 0, 0, 0.4);
 }
-button:hover {
+.btn:hover {
     animation-name: blink;
     animation-duration: 1s;
     font-size: 32px; 

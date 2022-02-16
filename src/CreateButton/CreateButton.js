@@ -1,14 +1,14 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 import './CreateButton.css';
 
-function CreateButton ({ setStateApp }) {
+function CreateButton () {
     const onClickButton = (msg)=> {
         alert(msg);
-        setStateApp('Edit');
     }
     return (
         <div className="container__btn">
-            <button onClick={() => onClickButton("Ahora si! crear una nueva nota!")} className="btn">+</button>
+            <Link to="/add" onClick={() => onClickButton("Ahora si! crear una nueva nota!")} className="btn">+</Link>
         </div>
     );
 }

@@ -2,17 +2,19 @@ import React from "react";
 
 // import components
 import { HeaderNote } from "../HeaderNote/HeaderNote";
-import { FormNote } from "../FormNote/FormNote";
+import { FormNoteEdit } from "../FormNoteEdit/FormNoteEdit";
+import { BtnHeader } from "../BtnHeader/BtnHeader";
 
-function EditNote({ stateApp, setStateApp, setNewNote, addNote }) {
+function EditNote({ viewNote, setViewNote, updateNote }) {
   return (
     <React.Fragment>
-      <HeaderNote 
-        stateApp={stateApp} 
-        setStateApp={setStateApp}
-        addNote={addNote}
-      />
-      <FormNote setNewNote={setNewNote} />
+      <HeaderNote>
+        <BtnHeader to="/" icon="btn--icon" updateNote={updateNote} left="left"/>
+      </HeaderNote>
+        <FormNoteEdit
+          viewNote={viewNote} 
+          setViewNote={setViewNote}
+        />
     </React.Fragment>
   );
 }

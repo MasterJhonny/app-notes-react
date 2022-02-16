@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 // import components
 import { Header } from "../header/Header";
@@ -8,27 +9,30 @@ import { CreateButton } from "../CreateButton/CreateButton";
 
 
 
-function Home({ data, setStateApp }) {
+function Home({ data, renderNote }) {
   const [state, setState] = React.useState("");
 
   let expre = new RegExp(state, "i");
   let nombres = data.filter(note => expre.test(note.title));
 
-  // function addNote(note) {
-  //   notes.push(note);
-  //   setNotes([...notes]);
-  // }
-
-
   return (
     <React.Fragment>
-      <Header state={state} setState={setState} />
+      <Header 
+        state={state} 
+        setState={setState} 
+      />
       <Main>
         {nombres.map(note => (
-          <NoteItem key={note.title} title={note.title} />
+          <Link to="/view" key={note.id}>
+            <NoteItem 
+              id={note.id}
+              title={note.title}
+              renderNote={renderNote}
+            />
+          </Link>
         ))}
       </Main>
-      <CreateButton setStateApp={setStateApp}/>
+      <CreateButton/>
     </React.Fragment>
   );
 }

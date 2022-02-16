@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // styles app
 import "./App.css";
@@ -6,115 +7,139 @@ import "./App.css";
 // import components
 import { Home } from "./Home/Home";
 import { EditNote } from "./EditNote/EditNote";
+import { ViewNote } from "./ViewNote/ViewNote";
+import { AddNote } from "./AddNote/AddNote";
 
-// data
-const listNotes = [
-  { title: "title 1", description: "lorem ipsum dolor sit amet, consectetur" },
-  { title: "title 2", description: "lorem ipsum dolor sit amet, consectetur" },
-  { title: "title 3", description: "lorem ipsum dolor sit amet, consectetur" },
-  { title: "title 4", description: "lorem ipsum dolor sit amet, consectetur" },
-  { title: "title 5", description: "lorem ipsum dolor sit amet, consectetur" },
-  {
-    title: "como hacer",
-    description: "lorem ipsum dolor sit amet, consectetur",
-  },
-  { title: "prueba", description: "lorem ipsum dolor sit amet, consectetur" },
-  {
-    title: "como leer",
-    description: "lorem ipsum dolor sit amet, consectetur",
-  },
-  {
-    title: "como hacer la tarea",
-    description: "lorem ipsum dolor sit amet, consectetur",
-  },
-  {
-    title: "como comer feliz",
-    description: "lorem ipsum dolor sit amet, consectetur",
-  },
-  {
-    title: "como ver la tele",
-    description: "lorem ipsum dolor sit amet, consectetur",
-  },
-  {
-    title: "como estudiar bien",
-    description: "lorem ipsum dolor sit amet, consectetur",
-  },
-  {
-    title: "como leer la biblia",
-    description: "lorem ipsum dolor sit amet, consectetur",
-  },
-  { title: "title 12", description: "lorem ipsum dolor sit amet, consectetur" },
-  { title: "title 22", description: "lorem ipsum dolor sit amet, consectetur" },
-  { title: "title 31", description: "lorem ipsum dolor sit amet, consectetur" },
-  { title: "title 41", description: "lorem ipsum dolor sit amet, consectetur" },
-  { title: "title 8", description: "lorem ipsum dolor sit amet, consectetur" },
-  {
-    title: "como hacer las ",
-    description: "lorem ipsum dolor sit amet, consectetur",
-  },
-  {
-    title: "prueba de como",
-    description: "lorem ipsum dolor sit amet, consectetur",
-  },
-  {
-    title: "como leer rapido",
-    description: "lorem ipsum dolor sit amet, consectetur",
-  },
-  {
-    title: "como hacer la tarea mas rapido",
-    description: "lorem ipsum dolor sit amet, consectetur",
-  },
-  {
-    title: "como comer feliz y sonriente",
-    description: "lorem ipsum dolor sit amet, consectetur",
-  },
-  {
-    title: "como ver la tele en veloz",
-    description: "lorem ipsum dolor sit amet, consectetur",
-  },
-  {
-    title: "como estudiar bien rapido",
-    description: "lorem ipsum dolor sit amet, consectetur",
-  },
-  {
-    title: "como leer la biblia y entender",
-    description: "lorem ipsum dolor sit amet, consectetur",
-  },
-];
-
+// reder App
 function App() {
-  const [stateApp, setStateApp] = React.useState("Home");
-  const [notes, setNotes] = React.useState(listNotes);
-  const [newNote, setNewNote] = React.useState({});
+  const [notes, setNotes] = useState([]);
 
-  function addNote() {
-    if(newNote.title) {
-      notes.unshift(newNote);
-    } else if(newNote.description) {
-      newNote.title = newNote.description;
-      notes.unshift(newNote);
+  // estableciento las notas nuvas
+  const baseNote = { title: "", description: "" }
+  const [newNote, setNewNote] = useState(baseNote);
+  const [viewNote, setViewNote] = useState({});
+
+  // function asycn get notes
+  async function getNotes () {
+    const response = await fetch('http://192.168.1.101:8080/api/v1/notes');
+    const data = await response.json();
+    setNotes(data.reverse());
+  }
+
+  // function asycn add note
+  async function addNote () {
+    let { title, description } = newNote;
+    if(!title){
+      title = description.substr(0, 10) + '...';
     }
+    if(title && description) {
+      try {
+        const response = await fetch("http://192.168.1.101:8080/api/v1/notes", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json;charset=utf-8",
+          },
+          body: JSON.stringify({
+            title,
+            description,
+          }),
+        });
+        await response.json();
+  
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    setNewNote(baseNote);
+    getNotes();
   }
 
-  switch (stateApp) {
-    case "Home":
-      return (
-        <Home data={notes} stateApp={stateApp} setStateApp={setStateApp} />
-      );
-    case "Edit":
-      return (
-        <EditNote 
-          stateApp={stateApp} 
-          setStateApp={setStateApp} 
-          setNewNote={setNewNote}
-          addNote={addNote}
-        />
-      );
-    default:
-      return (
-        <Home data={notes} stateApp={stateApp} setStateApp={setStateApp} />
-      );
+  // function for update Note
+  async function updateNote () {
+    const { id, title, description } = viewNote;
+    if(title && description) {
+      try {
+        const response = await fetch(`http://192.168.1.101:8080/api/v1/notes/${id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json;charset=utf-8",
+          },
+          body: JSON.stringify({
+            title,
+            description,
+          }),
+        });
+        await response.json();
+  
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    getNotes();
   }
+
+  // function deleteNote
+  async function deleteNote() {
+    const id = viewNote.id;
+    console.log(viewNote);
+    try {
+      const response = await fetch(`http://192.168.1.101:8080/api/v1/notes/${id}`, {
+        method: "DELETE"
+      });
+      await response.json();
+
+    } catch (error) {
+      console.error(error);
+    }
+    getNotes();
+  }
+
+  // use efect
+  useEffect(() => {
+    getNotes();
+  }, [])
+
+  // function to render note
+  function renderNote(id) {
+    const viewNote = notes.find(note => note.id === id);
+    setViewNote(viewNote);
+  }
+
+  // desde here render router page
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route exact path="/" element={
+          <Home 
+            data={notes} 
+            renderNote={renderNote}
+          />
+        }/>
+        <Route exact path="/add" element={
+          <AddNote 
+            newNote={newNote} 
+            setNewNote={setNewNote}
+            addNote={addNote} 
+          />
+        }/>
+        <Route exact path="/edit" element={
+          <EditNote 
+            viewNote={viewNote} 
+            setViewNote={setViewNote}
+            updateNote={updateNote}
+          />
+        }/>
+        <Route exact path="/view" element={
+          <ViewNote 
+          title={viewNote.title}
+          description={viewNote.description}
+          deleteNote={deleteNote}
+        />
+        }/>
+        <Route exact path="/fana" element={<h4>Fana</h4>}/>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;

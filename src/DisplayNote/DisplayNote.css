@@ -6,6 +6,8 @@
 }
 
 .description {
+    width: 100%;
+    max-width: 550px;
     color: #FFFFFF;
     font-size: 22px;
     line-height: 30px;

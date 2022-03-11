@@ -7,7 +7,7 @@ function DisplayNote ({ title, description }) {
     return (
         <div className="taskform">
             <h3 className="title">{title}</h3>
-            <div className="description">{description}</div>
+            <p className="description">{description}</p>
         </div>
     );
 }

@@ -23,11 +23,12 @@ function Home({ data, renderNote }) {
       />
       <Main>
         {nombres.map(note => (
-          <Link to="/view" key={note.id}>
+          <Link to="/view" key={note._id}>
             <NoteItem 
-              id={note.id}
+              id={note._id}
               title={note.title}
               renderNote={renderNote}
+              color={note.color}
             />
           </Link>
         ))}

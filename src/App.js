@@ -10,6 +10,13 @@ import { EditNote } from "./EditNote/EditNote";
 import { ViewNote } from "./ViewNote/ViewNote";
 import { AddNote } from "./AddNote/AddNote";
 
+// generation number randon
+function random(min, max) {
+  return Math.floor((Math.random() * (max - min + 1)) + min);
+}
+// list color for backColor
+const listColor = ['FD99FF', 'FF9E9E', '91F48F', 'FFF599', '9EFFFF', 'B69CFF'];
+
 // reder App
 function App() {
   const [notes, setNotes] = useState([]);
@@ -21,7 +28,7 @@ function App() {
 
   // function asycn get notes
   async function getNotes () {
-    const response = await fetch('http://192.168.1.101:8080/api/v1/notes');
+    const response = await fetch('https://api-notes-express.herokuapp.com/api/v1/notes');
     const data = await response.json();
     setNotes(data.reverse());
   }
@@ -29,12 +36,14 @@ function App() {
   // function asycn add note
   async function addNote () {
     let { title, description } = newNote;
+    let color = `${listColor[random(0, listColor.length - 1)]}`;
+
     if(!title){
       title = description.substr(0, 10) + '...';
     }
     if(title && description) {
       try {
-        const response = await fetch("http://192.168.1.101:8080/api/v1/notes", {
+        const response = await fetch("https://api-notes-express.herokuapp.com/api/v1/notes", {
           method: "POST",
           headers: {
             "Content-Type": "application/json;charset=utf-8",
@@ -42,6 +51,7 @@ function App() {
           body: JSON.stringify({
             title,
             description,
+            color,
           }),
         });
         await response.json();
@@ -56,10 +66,12 @@ function App() {
 
   // function for update Note
   async function updateNote () {
-    const { id, title, description } = viewNote;
+    const { _id, title, description } = viewNote;
+
+    // validate title and description
     if(title && description) {
       try {
-        const response = await fetch(`http://192.168.1.101:8080/api/v1/notes/${id}`, {
+        const response = await fetch(`https://api-notes-express.herokuapp.com/api/v1/notes/${_id}`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json;charset=utf-8",
@@ -78,12 +90,14 @@ function App() {
     getNotes();
   }
 
+
+  // falta del validar si borra la nota!!!!!
   // function deleteNote
   async function deleteNote() {
-    const id = viewNote.id;
-    console.log(viewNote);
+    const id = viewNote._id;
+
     try {
-      const response = await fetch(`http://192.168.1.101:8080/api/v1/notes/${id}`, {
+      const response = await fetch(`https://api-notes-express.herokuapp.com/api/v1/notes/${id}`, {
         method: "DELETE"
       });
       await response.json();
@@ -101,7 +115,7 @@ function App() {
 
   // function to render note
   function renderNote(id) {
-    const viewNote = notes.find(note => note.id === id);
+    const viewNote = notes.find(note => note._id === id);
     setViewNote(viewNote);
   }
 

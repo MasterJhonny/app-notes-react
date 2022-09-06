@@ -19,7 +19,7 @@ const listColor = ['FD99FF', 'FF9E9E', '91F48F', 'FFF599', '9EFFFF', 'B69CFF'];
 
 // reder App
 function App() {
-  const [notes, setNotes] = useState([]);
+  const [notes, setNotes] = useState(null);
 
   // estableciento las notas nuvas
   const baseNote = { title: "", description: "" }
@@ -110,7 +110,8 @@ function App() {
 
   // use efect
   useEffect(() => {
-    getNotes();
+    // setTimeout(getNotes, 2000);
+    getNotes()
   }, [])
 
   // function to render note

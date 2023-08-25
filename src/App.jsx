@@ -9,6 +9,7 @@ import { Home } from "./Home/Home";
 import { EditNote } from "./EditNote/EditNote";
 import { ViewNote } from "./ViewNote/ViewNote";
 import { AddNote } from "./AddNote/AddNote";
+import { config } from './config.js'; 
 
 // generation number randon
 function random(min, max) {
@@ -16,6 +17,7 @@ function random(min, max) {
 }
 // list color for backColor
 const listColor = ['FD99FF', 'FF9E9E', '91F48F', 'FFF599', '9EFFFF', 'B69CFF'];
+const API_URL = config.API_URL;
 
 // reder App
 function App() {
@@ -28,7 +30,7 @@ function App() {
 
   // function asycn get notes
   async function getNotes () {
-    const response = await fetch('https://api-notes-express.herokuapp.com/api/v1/notes');
+    const response = await fetch(`${API_URL}/notes`);
     const data = await response.json();
     setNotes(data.reverse());
   }
@@ -43,7 +45,7 @@ function App() {
     }
     if(title && description) {
       try {
-        const response = await fetch("https://api-notes-express.herokuapp.com/api/v1/notes", {
+        const response = await fetch(`${API_URL}/notes`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json;charset=utf-8",
@@ -71,7 +73,7 @@ function App() {
     // validate title and description
     if(title && description) {
       try {
-        const response = await fetch(`https://api-notes-express.herokuapp.com/api/v1/notes/${_id}`, {
+        const response = await fetch(`${API_URL}/notes/${_id}`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json;charset=utf-8",
@@ -97,7 +99,7 @@ function App() {
     const id = viewNote._id;
 
     try {
-      const response = await fetch(`https://api-notes-express.herokuapp.com/api/v1/notes/${id}`, {
+      const response = await fetch(`${API_URL}/notes/${id}`, {
         method: "DELETE"
       });
       await response.json();
